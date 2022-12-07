@@ -4,7 +4,7 @@ import requests
 
 URL = 'https://portal.nersc.gov/project/crcns/download/index.php'
 
-def download(datafile,username,password):
+def download(datafile,username,password, local_filename = None):
 
     login_data = dict(
         username=username,
@@ -14,7 +14,10 @@ def download(datafile,username,password):
         )
 
     with requests.Session() as s:
-        local_filename = login_data['fn'].split('/')[-1]
+
+        if local_filename is None:
+            local_filename = login_data['fn'].split('/')[-1]
+
         r = s.post(URL,data=login_data,stream=True)
         with open(local_filename, 'wb') as f:
             for chunk in r.iter_content(chunk_size=1024):
